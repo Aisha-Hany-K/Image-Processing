@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cctype>
 #include "Image_Class.h"
 
 using namespace std;
@@ -15,11 +16,8 @@ bool isValidExtension(const string& filename) {
     return (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp");
 }
 
-// نماذج لدوال الفلاتر (8 فلاتر للجزء الأول)
-void filterGrayscale(Image& img);
-void filterBlackAndWhite(Image& img);
+// نموذج دالة الفلتر 3
 void filterInvert(Image& img);
-// ... باقي الفلاتر الـ 8
 
 int main() {
     Image currentImage;
@@ -53,20 +51,18 @@ int main() {
                 continue;
             }
             cout << "\n--- Select Filter ---\n";
-            cout << "1. Grayscale\n";
-            cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
-            //...
             
             int filterChoice;
             cin >> filterChoice;
 
             switch (filterChoice) {
-                case 1: filterGrayscale(currentImage); break;
-                case 2: filterBlackAndWhite(currentImage); break;
-                case 3: filterInvert(currentImage); break;
-                //...
-                default: cout << "Invalid filter choice.\n";
+                case 3: 
+                    filterInvert(currentImage); 
+                    cout << "Invert filter applied successfully.\n";
+                    break;
+                default: 
+                    cout << "Invalid filter choice.\n";
             }
         } 
         else if (choice == 3) {
@@ -93,4 +89,17 @@ int main() {
         }
     }
     return 0;
+}
+
+// ==========================================
+// Filter 3: Invert Image
+// ==========================================
+void filterInvert(Image& img) {
+    for (int i = 0; i < img.width; i++) {
+        for (int j = 0; j < img.height; j++) {
+            for (int k = 0; k < 3; k++) {
+                img(i, j, k) = 255 - img(i, j, k);
+            }
+        }
+    }
 }
