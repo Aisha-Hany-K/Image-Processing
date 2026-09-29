@@ -38,7 +38,30 @@ void filterGrayscale(Image& img)
         }
     }
 }
-void filterBlackAndWhite(Image& img);
+void filterBlackAndWhite(Image& img) {
+    for (int i = 0; i < img.width; ++i) {
+        for (int j = 0; j < img.height; ++j) {
+            unsigned int avg = 0;
+
+            for (int k = 0; k < 3; ++k) {
+                avg += img(i, j, k);
+            }
+
+            avg /= 3;
+
+            if (avg < 128) {
+                img(i, j, 0) = 0;
+                img(i, j, 1) = 0;
+                img(i, j, 2) = 0;
+            }
+            else {
+                img(i, j, 0) = 255;
+                img(i, j, 1) = 255;
+                img(i, j, 2) = 255;
+            }
+        }
+    }
+}
 void filterInvert(Image& img);
 
 // Menu
