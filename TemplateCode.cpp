@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
+#include <bits/stdc++.h>
 #include "Image_Class.h"
 
 using namespace std;
 
-// دالة للتحقق من صحة امتداد الصورة عند الحفظ
 bool isValidExtension(const string& filename) {
     string ext = "";
     size_t dotPos = filename.find_last_of(".");
@@ -15,12 +15,33 @@ bool isValidExtension(const string& filename) {
     return (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp");
 }
 
-// نماذج لدوال الفلاتر (8 فلاتر للجزء الأول)
-void filterGrayscale(Image& img);
+// Filters
+void filterGrayscale(Image& img)
+{
+    for(int i=0; i<img.width; i++)
+    {
+        for(int j=0; j<img.height; j++)
+        {
+            int ave = 0;
+
+            for(int k=0; k<3; k++)
+            {
+                ave += img(i, j, k);
+            }
+
+            ave /= 3;
+
+            for (int k=0; k<3; k++)
+            {
+                img(i, j, k) = ave;
+            }
+        }
+    }
+}
 void filterBlackAndWhite(Image& img);
 void filterInvert(Image& img);
-// ... باقي الفلاتر الـ 8
 
+// Menu
 int main() {
     Image currentImage;
     string filename;
@@ -52,6 +73,7 @@ int main() {
                 cout << "Please load an image first!\n";
                 continue;
             }
+            // Write your filter in the choices
             cout << "\n--- Select Filter ---\n";
             cout << "1. Grayscale\n";
             cout << "2. Black and White\n";
