@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <cctype>
+#include <bits/stdc++.h>
 #include "Image_Class.h"
 
 using namespace std;
@@ -26,6 +26,7 @@ void filterInvert(Image& img) {
     }
 }
 
+// Menu
 int main() {
     Image currentImage;
     string filename;
@@ -57,6 +58,7 @@ int main() {
                 cout << "Please load an image first!\n";
                 continue;
             }
+            // Write your filter in the choices
             cout << "\n--- Select Filter ---\n";
             cout << "3. Invert Colors\n";
             
