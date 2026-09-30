@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// دالة للتحقق من صحة امتداد الصورة عند الحفظ
+
 bool isValidExtension(const string& filename) {
     string ext = "";
     size_t dotPos = filename.find_last_of(".");
@@ -16,8 +16,15 @@ bool isValidExtension(const string& filename) {
     return (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp");
 }
 
-// نموذج دالة الفلتر 3
-void filterInvert(Image& img);
+void filterInvert(Image& img) {
+    for (int i = 0; i < img.width; i++) {
+        for (int j = 0; j < img.height; j++) {
+            for (int k = 0; k < 3; k++) {
+                img(i, j, k) = 255 - img(i, j, k);
+            }
+        }
+    }
+}
 
 int main() {
     Image currentImage;
@@ -89,17 +96,4 @@ int main() {
         }
     }
     return 0;
-}
-
-// ==========================================
-// Filter 3: Invert Image
-// ==========================================
-void filterInvert(Image& img) {
-    for (int i = 0; i < img.width; i++) {
-        for (int j = 0; j < img.height; j++) {
-            for (int k = 0; k < 3; k++) {
-                img(i, j, k) = 255 - img(i, j, k);
-            }
-        }
-    }
 }
