@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 bool isValidExtension(const string& filename) {
     string ext = "";
     size_t dotPos = filename.find_last_of(".");
@@ -15,54 +16,15 @@ bool isValidExtension(const string& filename) {
     return (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp");
 }
 
-// Filters
-void filterGrayscale(Image& img)
-{
-    for(int i=0; i<img.width; i++)
-    {
-        for(int j=0; j<img.height; j++)
-        {
-            int ave = 0;
-
-            for(int k=0; k<3; k++)
-            {
-                ave += img(i, j, k);
-            }
-
-            ave /= 3;
-
-            for (int k=0; k<3; k++)
-            {
-                img(i, j, k) = ave;
+void filterInvert(Image& img) {
+    for (int i = 0; i < img.width; i++) {
+        for (int j = 0; j < img.height; j++) {
+            for (int k = 0; k < 3; k++) {
+                img(i, j, k) = 255 - img(i, j, k);
             }
         }
     }
 }
-void filterBlackAndWhite(Image& img) {
-    for (int i = 0; i < img.width; ++i) {
-        for (int j = 0; j < img.height; ++j) {
-            unsigned int avg = 0;
-
-            for (int k = 0; k < 3; ++k) {
-                avg += img(i, j, k);
-            }
-
-            avg /= 3;
-
-            if (avg < 128) {
-                img(i, j, 0) = 0;
-                img(i, j, 1) = 0;
-                img(i, j, 2) = 0;
-            }
-            else {
-                img(i, j, 0) = 255;
-                img(i, j, 1) = 255;
-                img(i, j, 2) = 255;
-            }
-        }
-    }
-}
-void filterInvert(Image& img);
 
 // Menu
 int main() {
@@ -98,20 +60,18 @@ int main() {
             }
             // Write your filter in the choices
             cout << "\n--- Select Filter ---\n";
-            cout << "1. Grayscale\n";
-            cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
-            //...
             
             int filterChoice;
             cin >> filterChoice;
 
             switch (filterChoice) {
-                case 1: filterGrayscale(currentImage); break;
-                case 2: filterBlackAndWhite(currentImage); break;
-                case 3: filterInvert(currentImage); break;
-                //...
-                default: cout << "Invalid filter choice.\n";
+                case 3: 
+                    filterInvert(currentImage); 
+                    cout << "Invert filter applied successfully.\n";
+                    break;
+                default: 
+                    cout << "Invalid filter choice.\n";
             }
         } 
         else if (choice == 3) {
