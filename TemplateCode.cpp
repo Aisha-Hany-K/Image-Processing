@@ -63,7 +63,61 @@ void filterBlackAndWhite(Image& img) {
     }
 }
 void filterInvert(Image& img);
-
+void filterFrame(Image& img, int f) {
+    int s = 30;
+    int corner = 50;
+    for (int x = 0; x < img.width; x++) {
+        for (int y = 0; y < img.height; y++) {
+            if (x < s || x >= currentImage.width - s || y < s || y >= currentImage.height - s) {
+                switch (f) {
+                case 1:
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 0;
+                    img(x, y, 2) = 0;
+                    break;
+                case 2:
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 255;
+                    img(x, y, 2) = 255;
+                    break;
+                case 3:
+                    img(x, y, 0) = 0;
+                    img(x, y, 1) = 0;
+                    img(x, y, 2) = 0;
+                    break;
+                }
+            }
+            if (f == 4) {
+                if (x < s || x >= currentImage.width - s || y < s || y >= currentImage.height - s) {
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 215;
+                    img(x, y, 2) = 0;
+                }
+                else if (x <= corner && y <= corner) {
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 215;
+                    img(x, y, 2) = 0;
+                }
+                else if (x >= img.width - corner && y <= corner) {
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 215;
+                    img(x, y, 2) = 0;
+                }
+                else if (x <= corner && y >= img.height - corner) {
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 215;
+                    img(x, y, 2) = 0;
+                }
+                else if (x >= img.width - corner && y >= img.height - corner) {
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 215;
+                    img(x, y, 2) = 0;
+                }
+            }
+        }
+    }
+}
+ 
 // Menu
 int main() {
     Image currentImage;
@@ -101,6 +155,8 @@ int main() {
             cout << "1. Grayscale\n";
             cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
+            cout << "4. Add Frame/n";
+            cout << "5. Resizing/n";
             //...
             
             int filterChoice;
@@ -110,8 +166,21 @@ int main() {
                 case 1: filterGrayscale(currentImage); break;
                 case 2: filterBlackAndWhite(currentImage); break;
                 case 3: filterInvert(currentImage); break;
+                case 4: cout << "Choose a frame style: \n";
+                    cout << "1. Red \n";
+                    cout << "2. White \n";
+                    cout << "3. Blach \n";
+                    cout << "4. Decorated \n";
+                    int f;
+                    cin >> f;
+                    if (f >= 1 && f <= 4) {
+                        filterFrame(currentImage, f);
+                    }
+                    else {
+                        cout << "Invalid input!";
+                    } break;
                 //...
-                default: cout << "Invalid filter choice.\n";
+                default: cout << "Invalid filter choice.\n"; break;
             }
         } 
         else if (choice == 3) {
