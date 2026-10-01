@@ -24,7 +24,6 @@ Image Processing application developed with C++, the application allow users to 
   *Fancy frame
   *Custom frame color
 
-
 *Project Structure*
 Image-Processing/
 │
