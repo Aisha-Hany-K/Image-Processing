@@ -97,7 +97,7 @@ void filterBlackAndWhite(Image& img) {
         }
     }
 }
-// void filterInvert(Image& img);
+
 void filterRotate(Image& img, int rotation) {
 
     switch (rotation) {
@@ -155,7 +155,15 @@ void filterRotate(Image& img, int rotation) {
     }
 }
 
-
+void filterInvert(Image& img) {
+    for (int i = 0; i < img.width; ++i) {
+        for (int j = 0; j < img.height; ++j) {
+            for (int k = 0; k < img.channels; ++k) {
+                img(i, j, k) = 255 - img(i, j, k);
+            }
+        }
+    }
+}
 
 // Menu
 int main() {
@@ -205,7 +213,7 @@ int main() {
             switch (filterChoice) {
                 case 1: filterGrayscale(currentImage); break;
                 case 2: filterBlackAndWhite(currentImage); break;
-                // case 3: filterInvert(currentImage); break;
+                case 3: filterInvert(currentImage); break;
                 case 4: cout << "Choose:\n";
                         cout << "1. flip Horizontally\n";
                         cout << "2. flip Vertically\n";
