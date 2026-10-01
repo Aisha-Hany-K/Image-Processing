@@ -66,13 +66,13 @@ void filterFlip(Image& img, int x)
                 }
             }
         }
-        cout << "Implemented Vertical Flip filter successfully!";
+        
         break;
 
         case 2:
         for(int i= img.width-1; i>=0; i--)
         {
-            for(int j=0; j<img.height; i++)
+            for(int j=0; j<img.height; j++)
             {
                 for(int k=0; k<3; k++)
                 {
@@ -80,7 +80,7 @@ void filterFlip(Image& img, int x)
                 }
             }
         }
-        cout << "Implemented Horizontal Flip filter successfully!";
+        
         break;
     }
 
@@ -204,7 +204,7 @@ void filterRotate(Image& img, int rotation) {
         }
 
         case 270: {
-            Image rotated(img.height, img.width);
+           Image rotated(img.height, img.width);
 
             for (int i = 0; i < img.width; ++i) {
                 for (int j = 0; j < img.height; ++j) {
@@ -215,7 +215,7 @@ void filterRotate(Image& img, int rotation) {
                 }
             }
 
-            filterFlip(img , 2);
+            filterFlip(rotated , 2);
 
             img = rotated;
             break;
@@ -291,7 +291,7 @@ int main() {
         cin >> choice;
 
         if (choice == 1) {
-            cout << "Enter image filename to load: ";
+            cout << "Enter image filename to load:\n ";
             cin >> filename;
             try {
                 currentImage.loadNewImage(filename);
@@ -324,15 +324,15 @@ int main() {
 
             switch (filterChoice) {
             case 1: filterGrayscale(currentImage); 
-            cout << "Implemented Grayscale filter successfully!";
+            cout << "Implemented Grayscale filter successfully!\n";
             break;
 
             case 2: filterBlackAndWhite(currentImage); 
-            cout << "Implemented Black and White filter successfully!";
+            cout << "Implemented Black and White filter successfully!\n";
             break;
 
             case 3: filterInvert(currentImage);
-            cout << "Implemented Invert filter successfully!";
+            cout << "Implemented Invert filter successfully!\n";
             break;
 
             case 4: cout << "Choose:\n";
@@ -343,6 +343,14 @@ int main() {
                 if (x == 1 || x == 2)
                 {
                     filterFlip(currentImage, x);
+                    if(x==1)
+                    {
+                        cout << "Implemented Vertical Flip filter successfully!\n";
+                    }
+                    else
+                    {
+                        cout << "Implemented Horizontal Flip filter successfully!\n";
+                    }
                 }
                 else
                 {
@@ -364,17 +372,17 @@ int main() {
 
                 case 1:
                     filterRotate(currentImage, 90);
-                    cout << "Implemented 90 Degree Rotation filter successfully!";
+                    cout << "Implemented 90 Degree Rotation filter successfully!\n";
                     break;
 
                 case 2:
                     filterRotate(currentImage, 180);
-                    cout << "Implemented 180 Degree Rotation filter successfully!";
+                    cout << "Implemented 180 Degree Rotation filter successfully!\n";
                     break;
 
                 case 3:
                     filterRotate(currentImage, 270);
-                    cout << "Implemented 270 Degree Rotation filter successfully!";
+                    cout << "Implemented 270 Degree Rotation filter successfully!\n";
                     break;
 
                 default:
@@ -394,14 +402,14 @@ int main() {
                     filterFrame(currentImage, f);
                     switch(f)
                     {
-                        case 1: cout << "Implemented Red Frame successfully!"; break;
-                        case 2: cout << "Implemented White Frame successfully!"; break;
-                        case 3: cout << "Implemented Black Frame successfully!"; break;
-                        case 4: cout << "Implemented Decorated Frame successfully!"; break;
+                        case 1: cout << "Implemented Red Frame successfully!\n"; break;
+                        case 2: cout << "Implemented White Frame successfully!\n"; break;
+                        case 3: cout << "Implemented Black Frame successfully!\n"; break;
+                        case 4: cout << "Implemented Decorated Frame successfully!\n"; break;
                     }
                 }
                 else {
-                    cout << "Invalid choice!";
+                    cout << "Invalid choice!\n";
                 } 
                 break;
 
@@ -427,12 +435,12 @@ int main() {
                 if(ch == 1)
                 {
                     filterLighten(currentImage);
-                    cout << "Implemented Lighten filter successfully!";
+                    cout << "Implemented Lighten filter successfully!\n";
                 }
                 else if(ch == 2)
                 {
                     filterDarken(currentImage);
-                    cout << "Implemented Darken filter successfully!";
+                    cout << "Implemented Darken filter successfully!\n";
                 }
                 else
                 {
