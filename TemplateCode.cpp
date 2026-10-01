@@ -38,6 +38,41 @@ void filterGrayscale(Image& img)
         }
     }
 }
+void filterFlip(Image& img, int x)
+{
+    Image adjustedimg(img.height, img.width);
+    switch (x)
+    {
+        case 1:
+        for(int i=0; i<img.width; i++)
+        {
+            for(int j = img.height -1; j>=0; j--)
+            {
+                for(int k=0; k<3; k++)
+                {
+                    adjustedimg(i, j, k) = img(i, img.height- j -1, k);
+                }
+            }
+        }
+        break;
+
+        case 2:
+        for(int i= img.width-1; i>=0; i--)
+        {
+            for(int j=0; j<img.height; i++)
+            {
+                for(int k=0; k<3; k++)
+                {
+                    adjustedimg(i, j, k) = img(img.width- i -1 ,j ,k);
+                }
+            }
+        }
+        break;
+    }
+
+    img = adjustedimg;
+}
+
 void filterBlackAndWhite(Image& img) {
     for (int i = 0; i < img.width; ++i) {
         for (int j = 0; j < img.height; ++j) {
@@ -101,6 +136,8 @@ int main() {
             cout << "1. Grayscale\n";
             cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
+            cout << "4. Flip Image\n";
+
             //...
             
             int filterChoice;
@@ -110,6 +147,19 @@ int main() {
                 case 1: filterGrayscale(currentImage); break;
                 case 2: filterBlackAndWhite(currentImage); break;
                 case 3: filterInvert(currentImage); break;
+                case 4: cout << "Choose:\n";
+                        cout << "1. flip Horizontally\n";
+                        cout << "2. flip Vertically\n";
+                        cout << "Enter choice: "; int x; cin>> x;
+                        if (x == 1 || x == 2)
+                        {
+                            filterFlip(currentImage, x);
+                        }
+                        else
+                        {
+                            cout << "Invalid Input\n";
+                        }
+                break;
                 //...
                 default: cout << "Invalid filter choice.\n";
             }
