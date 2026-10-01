@@ -222,6 +222,20 @@ void filterInvert(Image& img) {
     }
 }
 
+void filterResize(Image& img, int newW, int newH) {
+    double scaleX = (double)newW / img.width;
+    double scaleY = (double)newH / img.height;
+    for (int x = 0; x < newW; ++x) {
+        for (int y = 0; y < newH; ++y) {
+            int oldX = x / scaleX;
+            int oldY = y / scaleY;
+            for (int c = 0; c < 3; ++c) {
+                resized(x, y, c) = currentImage(oldX, oldY, c);
+            }
+        }
+    }
+}
+
 // Menu
 int main() {
     Image currentImage;
@@ -259,11 +273,11 @@ int main() {
             cout << "1. Grayscale\n";
             cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
-            cout << "4. Add Frame/n";
-            cout << "5. Resizing/n";
 =======
             cout << "4. Flip Image\n";
             cout << "5. Rotate Image\n";
+            cout << "6. Add frame\n";
+            cout << "7. Resizing\n";
 
             //...
             
@@ -271,21 +285,21 @@ int main() {
             cin >> filterChoice;
 
             switch (filterChoice) {
-                case 1: filterGrayscale(currentImage); break;
-                case 2: filterBlackAndWhite(currentImage); break;
-                case 3: filterInvert(currentImage); break;
-                case 4: cout << "Choose:\n";
-                        cout << "1. flip Horizontally\n";
-                        cout << "2. flip Vertically\n";
-                        cout << "Enter choice: "; int x; cin>> x;
-                        if (x == 1 || x == 2)
-                        {
-                            filterFlip(currentImage, x);
-                        }
-                        else
-                        {
-                            cout << "Invalid Input\n";
-                        }
+            case 1: filterGrayscale(currentImage); break;
+            case 2: filterBlackAndWhite(currentImage); break;
+            case 3: filterInvert(currentImage); break;
+            case 4: cout << "Choose:\n";
+                cout << "1. flip Horizontally\n";
+                cout << "2. flip Vertically\n";
+                cout << "Enter choice: "; int x; cin >> x;
+                if (x == 1 || x == 2)
+                {
+                    filterFlip(currentImage, x);
+                }
+                else
+                {
+                    cout << "Invalid Input\n";
+                }
                 break;
             case 5:
                 int rotationChoice;
@@ -325,7 +339,23 @@ int main() {
                 if (f >= 1 && f <= 4) {
                     filterFrame(currentImage, f);
                 }
-            default: cout << "Invalid choice.\n"; break;
+                else {
+                    cout << "Invalid choice!";
+                } break;
+
+            case 7: cout << "Enter new width and height: ";
+                if (newW > 0 && newH > 0) {
+                    filterResise(currentImage); break;
+                }
+                else if (newW <= 0) {
+                    cout << "Invalid width!"
+                }
+                else if (newH <= 0) {
+                    cout << "Invalid height!"
+                }
+                else {
+                    cout << "Invalid height and width!";
+                }
             //....
                               
                 default: cout << "Invalid filter choice.\n";    
