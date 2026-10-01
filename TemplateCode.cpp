@@ -54,6 +54,67 @@ void filterBlackAndWhite(Image& img) {
         }
     }
 }
+// void filterInvert(Image& img);
+void filterRotate(Image& img, int rotation) {
+
+    switch (rotation) {
+
+        case 90: {
+            Image rotated(img.height, img.width);
+
+            for (int i = 0; i < img.width; ++i) {
+                for (int j = 0; j < img.height; ++j) {
+
+                    rotated(img.height - 1 - j, i, 0) = img(i, j, 0);
+                    rotated(img.height - 1 - j, i, 1) = img(i, j, 1);
+                    rotated(img.height - 1 - j, i, 2) = img(i, j, 2);
+                }
+            }
+
+            img = rotated;
+            break;
+        }
+
+        case 180: {
+            Image rotated(img.width, img.height);
+
+            for (int i = 0; i < img.width; ++i) {
+                for (int j = 0; j < img.height; ++j) {
+
+                    rotated(img.width - 1 - i, img.height - 1 - j, 0) = img(i, j, 0);
+                    rotated(img.width - 1 - i, img.height - 1 - j, 1) = img(i, j, 1);
+                    rotated(img.width - 1 - i, img.height - 1 - j, 2) = img(i, j, 2);
+                }
+            }
+
+            img = rotated;
+            break;
+        }
+
+        case 270: {
+            Image rotated(img.height, img.width);
+
+            for (int i = 0; i < img.width; ++i) {
+                for (int j = 0; j < img.height; ++j) {
+
+                    rotated(j, img.width - 1 - i, 0) = img(i, j, 0);
+                    rotated(j, img.width - 1 - i, 1) = img(i, j, 1);
+                    rotated(j, img.width - 1 - i, 2) = img(i, j, 2);
+                }
+            }
+
+            img = rotated;
+            break;
+        }
+
+        default:
+            cout << "Invalid rotation angle.\n";
+    }
+}
+
+
+
+// Menu
 
 // 3. Invert Colors Filter
 void filterInvert(Image& img) {
@@ -104,12 +165,62 @@ int main() {
             cout << "1. Grayscale\n";
             cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
+            cout << "4. Flip Image\n";
+            cout << "5. Rotate Image\n";
+
+            //...
             cout << "Enter filter choice: ";
             
             int filterChoice;
             cin >> filterChoice;
 
             switch (filterChoice) {
+                case 1: filterGrayscale(currentImage); break;
+                case 2: filterBlackAndWhite(currentImage); break;
+                // case 3: filterInvert(currentImage); break;
+                case 4: cout << "Choose:\n";
+                        cout << "1. flip Horizontally\n";
+                        cout << "2. flip Vertically\n";
+                        cout << "Enter choice: "; int x; cin>> x;
+                        if (x == 1 || x == 2)
+                        {
+                            filterFlip(currentImage, x);
+                        }
+                        else
+                        {
+                            cout << "Invalid Input\n";
+                        }
+                break;
+                case 5:
+                        int rotationChoice;
+
+                        cout << "Choose rotation:\n";
+                        cout << "1. 90 degrees\n";
+                        cout << "2. 180 degrees\n";
+                        cout << "3. 270 degrees\n";
+                        cout << "Enter choice: ";
+                        cin >> rotationChoice;
+
+                        switch (rotationChoice) {
+
+                            case 1:
+                                filterRotate(currentImage, 90);
+                                break;
+
+                            case 2:
+                                filterRotate(currentImage, 180);
+                                break;
+
+                            case 3:
+                                filterRotate(currentImage, 270);
+                                break;
+
+                            default:
+                                cout << "Invalid rotation choice.\n";
+                            break;
+                        }
+                              
+                default: cout << "Invalid filter choice.\n";    
                 case 1:
                     filterGrayscale(currentImage);
                     cout << "Grayscale filter applied successfully!\n";
@@ -125,7 +236,7 @@ int main() {
                 default:
                     cout << "Invalid filter choice.\n";
             }
-        } 
+        }
         else if (choice == 3) {
             if (!imageLoaded) {
                 cout << "No image to save!\n";
