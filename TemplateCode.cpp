@@ -5,7 +5,8 @@
 
 using namespace std;
 
-bool isValidExtension(const string& filename) {
+bool isValidExtension(const string& filename) 
+{
     string ext = "";
     size_t dotPos = filename.find_last_of(".");
     if (dotPos != string::npos) {
@@ -38,6 +39,7 @@ void filterGrayscale(Image& img)
         }
     }
 }
+
 void filterFlip(Image& img, int x)
 {
     Image adjustedimg(img.height, img.width);
@@ -54,6 +56,7 @@ void filterFlip(Image& img, int x)
                 }
             }
         }
+        cout << "Implemented Vertical Flip filter successfully!";
         break;
 
         case 2:
@@ -67,6 +70,7 @@ void filterFlip(Image& img, int x)
                 }
             }
         }
+        cout << "Implemented Horizontal Flip filter successfully!";
         break;
     }
 
@@ -97,13 +101,13 @@ void filterBlackAndWhite(Image& img) {
         }
     }
 }
-void filterInvert(Image& img);
+
 void filterFrame(Image& img, int f) {
     int s = 30;
     int corner = 50;
     for (int x = 0; x < img.width; x++) {
         for (int y = 0; y < img.height; y++) {
-            if (x < s || x >= currentImage.width - s || y < s || y >= currentImage.height - s) {
+            if (x < s || x >= img.width - s || y < s || y >= img.height - s) {
                 switch (f) {
                 case 1:
                     img(x, y, 0) = 255;
@@ -123,7 +127,7 @@ void filterFrame(Image& img, int f) {
                 }
             }
             if (f == 4) {
-                if (x < s || x >= currentImage.width - s || y < s || y >= currentImage.height - s) {
+                if (x < s || x >= img.width - s || y < s || y >= img.height - s) {
                     img(x, y, 0) = 255;
                     img(x, y, 1) = 215;
                     img(x, y, 2) = 0;
@@ -152,9 +156,7 @@ void filterFrame(Image& img, int f) {
         }
     }
 }
- 
-=======
-// void filterInvert(Image& img);
+
 void filterRotate(Image& img, int rotation) {
 
     switch (rotation) {
@@ -197,11 +199,13 @@ void filterRotate(Image& img, int rotation) {
             for (int i = 0; i < img.width; ++i) {
                 for (int j = 0; j < img.height; ++j) {
 
-                    rotated(j, img.width - 1 - i, 0) = img(i, j, 0);
-                    rotated(j, img.width - 1 - i, 1) = img(i, j, 1);
-                    rotated(j, img.width - 1 - i, 2) = img(i, j, 2);
+                    rotated(img.height - 1 - j, i, 0) = img(i, j, 0);
+                    rotated(img.height - 1 - j, i, 1) = img(i, j, 1);
+                    rotated(img.height - 1 - j, i, 2) = img(i, j, 2);
                 }
             }
+
+            filterFlip(img , 2);
 
             img = rotated;
             break;
@@ -225,12 +229,36 @@ void filterInvert(Image& img) {
 void filterResize(Image& img, int newW, int newH) {
     double scaleX = (double)newW / img.width;
     double scaleY = (double)newH / img.height;
+    Image resized (newW, newH);
     for (int x = 0; x < newW; ++x) {
         for (int y = 0; y < newH; ++y) {
             int oldX = x / scaleX;
             int oldY = y / scaleY;
             for (int c = 0; c < 3; ++c) {
-                resized(x, y, c) = currentImage(oldX, oldY, c);
+                resized(x, y, c) = img(oldX, oldY, c);
+            }
+        }
+    }
+    img = resized;
+}
+
+void filterLighten(Image& img) {
+    for (int i = 0; i < img.width; ++i) {
+        for (int j = 0; j < img.height; ++j) {
+            for (int k = 0; k < img.channels; ++k) {
+                int newValue = img(i, j, k) + (img(i, j, k) * 0.5);
+                img(i, j, k) = min(255, newValue);
+            }
+        }
+    }
+}
+
+void filterDarken(Image& img) {
+    for (int i = 0; i < img.width; ++i) {
+        for (int j = 0; j < img.height; ++j) {
+            for (int k = 0; k < img.channels; ++k) {
+                int newValue = img(i, j, k) - (img(i, j, k) * 0.5);
+                img(i, j, k) = max(0, newValue);
             }
         }
     }
@@ -263,6 +291,7 @@ int main() {
                 cout << "Failed to load image. Please check the file path.\n";
             }
         } 
+        //Applying Filters
         else if (choice == 2) {
             if (!imageLoaded) {
                 cout << "Please load an image first!\n";
@@ -273,25 +302,34 @@ int main() {
             cout << "1. Grayscale\n";
             cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
-=======
             cout << "4. Flip Image\n";
             cout << "5. Rotate Image\n";
             cout << "6. Add frame\n";
             cout << "7. Resizing\n";
-
+            cout << "8. Lighten Or Darken Image\n";
             //...
             
             int filterChoice;
             cin >> filterChoice;
 
             switch (filterChoice) {
-            case 1: filterGrayscale(currentImage); break;
-            case 2: filterBlackAndWhite(currentImage); break;
-            case 3: filterInvert(currentImage); break;
+            case 1: filterGrayscale(currentImage); 
+            cout << "Implemented Grayscale filter successfully!";
+            break;
+
+            case 2: filterBlackAndWhite(currentImage); 
+            cout << "Implemented Black and White filter successfully!";
+            break;
+
+            case 3: filterInvert(currentImage);
+            cout << "Implemented Invert filter successfully!";
+            break;
+
             case 4: cout << "Choose:\n";
+                cout << "Enter choice: "; 
                 cout << "1. flip Horizontally\n";
                 cout << "2. flip Vertically\n";
-                cout << "Enter choice: "; int x; cin >> x;
+                int x; cin >> x;
                 if (x == 1 || x == 2)
                 {
                     filterFlip(currentImage, x);
@@ -301,6 +339,7 @@ int main() {
                     cout << "Invalid Input\n";
                 }
                 break;
+
             case 5:
                 int rotationChoice;
 
@@ -315,20 +354,25 @@ int main() {
 
                 case 1:
                     filterRotate(currentImage, 90);
+                    cout << "Implemented 90 Degree Rotation filter successfully!";
                     break;
 
                 case 2:
                     filterRotate(currentImage, 180);
+                    cout << "Implemented 180 Degree Rotation filter successfully!";
                     break;
 
                 case 3:
                     filterRotate(currentImage, 270);
+                    cout << "Implemented 270 Degree Rotation filter successfully!";
                     break;
 
                 default:
                     cout << "Invalid rotation choice.\n";
                     break;
-                } break;
+                } 
+                break;
+
             case 6: cout << "Choose a frame style: \n";
                 cout << "1. Red\n";
                 cout << "2. White\n";
@@ -338,26 +382,55 @@ int main() {
                 cin >> f;
                 if (f >= 1 && f <= 4) {
                     filterFrame(currentImage, f);
+                    switch(f)
+                    {
+                        case 1: cout << "Implemented Red Frame successfully!"; break;
+                        case 2: cout << "Implemented White Frame successfully!"; break;
+                        case 3: cout << "Implemented Black Frame successfully!"; break;
+                        case 4: cout << "Implemented Decorated Frame successfully!"; break;
+                    }
                 }
                 else {
                     cout << "Invalid choice!";
-                } break;
+                } 
+                break;
 
-            case 7: cout << "Enter new width and height: ";
+            case 7: cout << "Enter new width and height: \n";
+            int newW; char xs; int newH; cin >> newW >> xs >> newH;
                 if (newW > 0 && newH > 0) {
-                    filterResise(currentImage); break;
+                    filterResize(currentImage, newW, newH); break;
                 }
                 else if (newW <= 0) {
-                    cout << "Invalid width!"
+                    cout << "Invalid width!\n";
                 }
                 else if (newH <= 0) {
-                    cout << "Invalid height!"
+                    cout << "Invalid height!\n";
                 }
                 else {
-                    cout << "Invalid height and width!";
+                    cout << "Invalid height and width!\n";
                 }
+                break;
+                case 8: cout << "Choose: \n";
+                cout << "1. Lighten the Image\n";
+                cout << "2. Darken the Image\n";
+                int ch; cin >> ch;
+                if(ch == 1)
+                {
+                    filterLighten(currentImage);
+                    cout << "Implemented Lighten filter successfully!";
+                }
+                else if(ch == 2)
+                {
+                    filterDarken(currentImage);
+                    cout << "Implemented Darken filter successfully!";
+                }
+                else
+                {
+                    cout << "Invalid Input!\n";
+                }
+                break;
             //....
-                              
+                     
                 default: cout << "Invalid filter choice.\n";    
             }
         }
