@@ -97,7 +97,7 @@ void filterBlackAndWhite(Image& img) {
         }
     }
 }
-void filterInvert(Image& img);
+// void filterInvert(Image& img);
 void filterRotate(Image& img, int rotation) {
 
     switch (rotation) {
@@ -195,6 +195,7 @@ int main() {
             cout << "2. Black and White\n";
             cout << "3. Invert Colors\n";
             cout << "4. Flip Image\n";
+            cout << "5. Rotate Image\n";
 
             //...
             
@@ -204,7 +205,7 @@ int main() {
             switch (filterChoice) {
                 case 1: filterGrayscale(currentImage); break;
                 case 2: filterBlackAndWhite(currentImage); break;
-                case 3: filterInvert(currentImage); break;
+                // case 3: filterInvert(currentImage); break;
                 case 4: cout << "Choose:\n";
                         cout << "1. flip Horizontally\n";
                         cout << "2. flip Vertically\n";
@@ -218,49 +219,38 @@ int main() {
                             cout << "Invalid Input\n";
                         }
                 break;
-                //...
-                default: cout << "Invalid filter choice.\n";
+                case 5:
+                        int rotationChoice;
 
+                        cout << "Choose rotation:\n";
+                        cout << "1. 90 degrees\n";
+                        cout << "2. 180 degrees\n";
+                        cout << "3. 270 degrees\n";
+                        cout << "Enter choice: ";
+                        cin >> rotationChoice;
+
+                        switch (rotationChoice) {
+
+                            case 1:
+                                filterRotate(currentImage, 90);
+                                break;
+
+                            case 2:
+                                filterRotate(currentImage, 180);
+                                break;
+
+                            case 3:
+                                filterRotate(currentImage, 270);
+                                break;
+
+                            default:
+                                cout << "Invalid rotation choice.\n";
+                            break;
+                        }
+                              
+                default: cout << "Invalid filter choice.\n";    
             }
-        } 
-                case 5: {
-                    int rotationChoice;
-
-                    cout << "Choose rotation:\n";
-                    cout << "1. 90 degrees\n";
-                    cout << "2. 180 degrees\n";
-                    cout << "3. 270 degrees\n";
-                    cout << "Enter choice: ";
-                    cin >> rotationChoice;
-
-                    switch (rotationChoice) {
-
-                        case 1:
-                            filterRotate(currentImage, 90);
-                            break;
-
-                        case 2:
-                            filterRotate(currentImage, 180);
-                            break;
-
-                        case 3:
-                            filterRotate(currentImage, 270);
-                            break;
-
-                        default:
-                            cout << "Invalid rotation choice.\n";
-                    }
-
-                    break;
-                }
-
-                default:
-                    cout << "Invalid filter choice.\n";
-            }
-            break;
-    
-
-}
+        }
         else if (choice == 3) {
             if (!imageLoaded) {
                 cout << "No image to save!\n";
