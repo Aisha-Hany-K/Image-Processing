@@ -235,27 +235,6 @@ void filterResize(Image& img, int newW, int newH) {
         }
     }
 }
-void filterLighten(Image& img) {
-    for (int i = 0; i < img.width; ++i) {
-        for (int j = 0; j < img.height; ++j) {
-            for (int k = 0; k < img.channels; ++k) {
-                int newValue = img(i, j, k) + (img(i, j, k) * 0.5);
-                img(i, j, k) = min(255, newValue);
-            }
-        }
-    }
-}
-
-void filterDarken(Image& img) {
-    for (int i = 0; i < img.width; ++i) {
-        for (int j = 0; j < img.height; ++j) {
-            for (int k = 0; k < img.channels; ++k) {
-                int newValue = img(i, j, k) - (img(i, j, k) * 0.5);
-                img(i, j, k) = max(0, newValue);
-            }
-        }
-    }
-}
 
 // Menu
 int main() {
