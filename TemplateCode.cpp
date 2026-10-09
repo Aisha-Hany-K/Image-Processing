@@ -273,6 +273,24 @@ void filterDarken(Image& img) {
         }
     }
 }
+void filterCrop(Image& img, int x, int y, int W, int H) {
+    if (x < 0 || y < 0 || x + W > img.width || y + H > img.height) {
+        cout << "Invalid crop dimensions! Out of image boundaries.\n";
+        return;
+    }
+
+    Image croppedImg(W, H);
+
+    for (int i = 0; i < W; ++i) {
+        for (int j = 0; j < H; ++j) {
+            for (int k = 0; k < img.channels; ++k) {
+                croppedImg(i, j, k) = img(x + i, y + j, k);
+            }
+        }
+    }
+
+    img = croppedImg;
+    cout << "Implemented Crop Filter successfully!\n";
 
 // Menu
 int main() {
