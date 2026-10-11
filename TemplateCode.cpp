@@ -274,6 +274,18 @@ void filterDarken(Image& img) {
     }
 }
 
+void filterTV(Image& img) {
+    for (int i = 0; i < img.width; ++i) {
+        for (int j = 0; j < img.height; ++j) {
+            if (j % 2 == 0) {
+                img(i, j, 0) = img(i, j, 0) * 0.4; // Red channel
+                img(i, j, 1) = img(i, j, 1) * 0.4; // Green channel
+                img(i, j, 2) = img(i, j, 2) * 0.4; // Blue channel
+            }
+        }
+    }
+}
+
 // Menu
 int main() {
     Image currentImage;
@@ -317,6 +329,7 @@ int main() {
             cout << "6. Add frame\n";
             cout << "7. Resizing\n";
             cout << "8. Lighten Or Darken Image\n";
+            cout << "13. TV Filter\n";
             //...
             
             int filterChoice;
@@ -447,6 +460,8 @@ int main() {
                     cout << "Invalid Input!\n";
                 }
                 break;
+                
+                case 13: filterTV(currentImage); cout << "TV filter applied successfully!\n"; break;
             //....
                      
                 default: cout << "Invalid filter choice.\n";    
