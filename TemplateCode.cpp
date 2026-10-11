@@ -273,6 +273,37 @@ void filterDarken(Image& img) {
         }
     }
 }
+void filterDetectEdges(Image& img) {
+
+    Image edges(img.width, img.height);
+
+    for (int i = 1; i < img.width - 1; ++i) {
+        for (int j = 1; j < img.height - 1; ++j) {
+
+            for (int k = 0; k < 3; ++k) {
+
+                int left = img(i - 1, j, k);
+                int right = img(i + 1, j, k);
+                int top = img(i, j - 1, k);
+                int bottom = img(i, j + 1, k);
+
+                int x = right - left;
+                int y = bottom - top;
+
+                int edge = abs(x) + abs(y);
+
+                if (edge > 255)
+                    edge = 255;
+
+                edges(i, j, k) = edge;
+            }
+        }
+    }
+
+    img = edges;
+}
+
+void filterInvert(Image& img);
 
 // Menu
 int main() {
