@@ -12,6 +12,7 @@
 #include <string>
 #include <bits/stdc++.h>
 #include "Image_Class.h"
+#include<algorithm>
 
 using namespace std;
 
@@ -274,6 +275,26 @@ void filterDarken(Image& img) {
     }
 }
 
+
+void filterInfrared(Image& img)
+{
+    for (int x = 0; x < img.width; x++)
+    {
+        for (int y = 0; y < img.height; y++)
+        {
+            int r = img(x, y, 0);
+            int g = img(x, y, 1);
+            int b = img(x, y, 2);
+
+            img(x, y, 0) = min(255, r + g);
+            img(x, y, 1) = r;
+            img(x, y, 2) = b / 3;
+        }
+    }
+}
+
+//...
+
 // Menu
 int main() {
     Image currentImage;
@@ -394,7 +415,7 @@ int main() {
             case 6: cout << "Choose a frame style: \n";
                 cout << "1. Red\n";
                 cout << "2. White\n";
-                cout << "3. Blach\n";
+                cout << "3. Black\n";
                 cout << "4. Decorated\n";
                 int f;
                 cin >> f;
@@ -447,6 +468,9 @@ int main() {
                     cout << "Invalid Input!\n";
                 }
                 break;
+
+                case 9:
+                    filterInfrared(currentImage);
             //....
                      
                 default: cout << "Invalid filter choice.\n";    
