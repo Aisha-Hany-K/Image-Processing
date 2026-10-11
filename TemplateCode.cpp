@@ -273,6 +273,25 @@ void filterDarken(Image& img) {
         }
     }
 }
+void filterPurple(Image& img) {
+    for (int i = 0; i < img.width; ++i) {
+        for (int j = 0; j < img.height; ++j) {
+            int r = img(i, j, 0);
+            int g = img(i, j, 1);
+            int b = img(i, j, 2);
+
+            int new_r = min(255, (int)(r * 1.25));
+            int new_g = (int)(g * 0.60);
+            int new_b = min(255, (int)(b * 1.35));
+
+            img(i, j, 0) = new_r;
+            img(i, j, 1) = new_g;
+            img(i, j, 2) = new_b;
+        }
+    }
+    cout << "Implemented Purple Wano Filter successfully!\n";
+}
+
 
 // Menu
 int main() {
