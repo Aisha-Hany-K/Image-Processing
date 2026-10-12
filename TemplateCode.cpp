@@ -494,6 +494,73 @@ void filterBlur(Image img) {
 
     img = blured;
 }
+void filterOilPainting(Image& img, int radius = 4, int levels = 20)
+{
+    Image result(img.width, img.height);
+
+    for (int x = 0; x < img.width; x++)
+    {
+        for (int y = 0; y < img.height; y++)
+        {
+            vector<int> count(levels, 0);
+            vector<int> sumR(levels, 0);
+            vector<int> sumG(levels, 0);
+            vector<int> sumB(levels, 0);
+
+            for (int dx = -radius; dx <= radius; dx++)
+            {
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    int nx = x + dx;
+                    int ny = y + dy;
+
+                    if (nx < 0 || nx >= img.width ||
+                        ny < 0 || ny >= img.height)
+                    {
+                        continue;
+                    }
+
+                    int r = img(nx, ny, 0);
+                    int g = img(nx, ny, 1);
+                    int b = img(nx, ny, 2);
+
+                    int intensity = (r + g + b) / 3;
+
+                    int bucket = intensity * levels / 256;
+
+                    if (bucket >= levels)
+                        bucket = levels - 1;
+
+                    count[bucket]++;
+                    sumR[bucket] += r;
+                    sumG[bucket] += g;
+                    sumB[bucket] += b;
+                }
+            }
+
+            int bestBucket = 0;
+
+            for (int i = 1; i < levels; i++)
+            {
+                if (count[i] > count[bestBucket])
+                {
+                    bestBucket = i;
+                }
+            }
+
+            result(x, y, 0) =
+                sumR[bestBucket] / count[bestBucket];
+
+            result(x, y, 1) =
+                sumG[bestBucket] / count[bestBucket];
+
+            result(x, y, 2) =
+                sumB[bestBucket] / count[bestBucket];
+        }
+    }
+
+    img = result;
+}
 
 // ================ GUI ===============//
 // ================ GUI ===============//
