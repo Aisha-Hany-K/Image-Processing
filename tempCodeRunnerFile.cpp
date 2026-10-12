@@ -1,0 +1,1 @@
+void filterInvert(Image& img);
