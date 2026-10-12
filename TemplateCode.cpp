@@ -95,27 +95,24 @@ void filterFlip(Image& img, int x)
     img = adjustedimg;
 }
 
-void filterBlackAndWhite(Image& img) {
-    for (int i = 0; i < img.width; ++i) {
-        for (int j = 0; j < img.height; ++j) {
-            unsigned int avg = 0;
-
-            for (int k = 0; k < 3; ++k) {
-                avg += img(i, j, k);
-            }
-
-            avg /= 3;
-
-            if (avg < 128) {
-                img(i, j, 0) = 0;
-                img(i, j, 1) = 0;
-                img(i, j, 2) = 0;
-            }
-            else {
-                img(i, j, 0) = 255;
-                img(i, j, 1) = 255;
-                img(i, j, 2) = 255;
-            }
+void filterBlackAndWhite(Image& img)
+{
+    for (int i = 0; i < img.width; i++)
+    {
+        for (int j = 0; j < img.height; j++)
+        {
+            int r = img(i, j, 0);
+            int g = img(i, j, 1);
+            int b = img(i, j, 2);
+            int gray = (r + g + b) / 3;
+            int value;
+            if (gray >= 128)
+                value = 255;
+            else
+                value = 0;
+            img(i, j, 0) = value;
+            img(i, j, 1) = value;
+            img(i, j, 2) = value;
         }
     }
 }
@@ -176,59 +173,45 @@ void filterFrame(Image& img, int f) {
 }
 
 void filterRotate(Image& img, int rotation) {
-
+    int w = img.width;
+    int h = img.height;
     switch (rotation) {
-
-        case 1: {
-            Image rotated(img.height, img.width);
-
-            for (int i = 0; i < img.width; ++i) {
-                for (int j = 0; j < img.height; ++j) {
-
-                    rotated(img.height - 1 - j, i, 0) = img(i, j, 0);
-                    rotated(img.height - 1 - j, i, 1) = img(i, j, 1);
-                    rotated(img.height - 1 - j, i, 2) = img(i, j, 2);
+        case 1: { 
+            Image rotated(h, w); 
+            for (int i = 0; i < w; ++i) {
+                for (int j = 0; j < h; ++j) {
+                    for (int k = 0; k < 3; ++k) {
+                        rotated(h - 1 - j, i, k) = img(i, j, k);
+                    }
                 }
             }
-
             img = rotated;
             break;
         }
-
-        case 2: {
-            Image rotated(img.width, img.height);
-
-            for (int i = 0; i < img.width; ++i) {
-                for (int j = 0; j < img.height; ++j) {
-
-                    rotated(img.width - 1 - i, img.height - 1 - j, 0) = img(i, j, 0);
-                    rotated(img.width - 1 - i, img.height - 1 - j, 1) = img(i, j, 1);
-                    rotated(img.width - 1 - i, img.height - 1 - j, 2) = img(i, j, 2);
+        case 2: { 
+            Image rotated(w, h);
+            for (int i = 0; i < w; ++i) {
+                for (int j = 0; j < h; ++j) {
+                    for (int k = 0; k < 3; ++k) {
+                        rotated(w - 1 - i, h - 1 - j, k) = img(i, j, k);
+                    }
                 }
             }
-
             img = rotated;
             break;
         }
-
-        case 3: {
-           Image rotated(img.height, img.width);
-
-            for (int i = 0; i < img.width; ++i) {
-                for (int j = 0; j < img.height; ++j) {
-
-                    rotated(img.height - 1 - j, i, 0) = img(i, j, 0);
-                    rotated(img.height - 1 - j, i, 1) = img(i, j, 1);
-                    rotated(img.height - 1 - j, i, 2) = img(i, j, 2);
+        case 3: { 
+            Image rotated(h, w);   
+            for (int i = 0; i < w; ++i) {
+                for (int j = 0; j < h; ++j) {
+                    for (int k = 0; k < 3; ++k) {
+                        rotated(j, w - 1 - i, k) = img(i, j, k);
+                    }
                 }
             }
-
-            filterFlip(rotated , 2);
-
             img = rotated;
             break;
         }
-
         default:
             cout << "Invalid rotation angle.\n";
     }
