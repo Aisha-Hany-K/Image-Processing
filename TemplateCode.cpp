@@ -12,6 +12,8 @@
 #include <string>
 #include <bits/stdc++.h>
 #include "Image_Class.h"
+#include<algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -274,6 +276,103 @@ void filterDarken(Image& img) {
     }
 }
 
+
+void filterInfrared(Image& img)
+{
+    for (int x = 0; x < img.width; x++)
+    {
+        for (int y = 0; y < img.height; y++)
+        {
+            int r = img(x, y, 0);
+            int g = img(x, y, 1);
+            int b = img(x, y, 2);
+
+            img(x, y, 0) = min(255, r + g);
+            img(x, y, 1) = r;
+            img(x, y, 2) = b / 3;
+        }
+    }
+}
+
+void filterSkew(Image& img, int k)
+{
+    double s = 0.3;
+    double newWidth = img.width;
+    double newHeight = img.height;
+    if (k == 1) {
+        double newWidth = img.width + (s * (img.height - 1));
+    }
+    else if (k == 2) {
+        double newHeight = img.height + (s * (img.width - 1));
+    }
+    Image skewed(ceil(newWidth), ceil(newHeight));
+
+    for (int x = 0; x < img.width; x++) {
+        for (int y = 0; y < img.height; y++) {
+            for (int c = 0; c < 3; c++) {
+                if (k == 1) {
+                    int newX = x + s * y;
+                    if (newX >= 0 && newX < newWidth) {
+                        skewed(newX, y, c) = img(x, y, c);
+                    }
+                }
+                else if (k == 2) {
+                    int newY = y + s * x;
+                    if (newY >= 0 && newY < newHeight) {
+                        skewed(x, newY, c) = img(x, y, c);
+                    }
+                }
+            }
+        }
+    }
+    img = skewed;
+}
+
+void filterBlur(Image img, Image blured) {
+    long long prefixR[1000 + 1][1000 + 1] = {};
+    long long prefixG[1000 + 1][1000 + 1] = {};
+    long long prefixB[1000 + 1][1000 + 1] = {};
+    for (x = 0; x < img.width; x++) {
+        for (y = 0; y < img.height; y++) {
+
+            prefixR[y + 1][x + 1] =
+                img(x, y, 0) + prefixR[y][x + 1] + prefixR[y + 1][x] - prefixR[y][x];
+
+            prefixG[y + 1][x + 1] =
+                img(x, y, 1) + prefixG[y][x + 1] + prefixG[y + 1][x] - prefixG[y][x];
+
+            prefixB[y + 1][x + 1] =
+                img(x, y, 2) + prefixB[y][x + 1] + prefixB[y + 1][x] - prefixB[y][x];
+
+        }
+    }
+
+    for (x = 0; x < img.width; x++) {
+        for (y = 0; y < img.height; y++) {
+            int top = max(0, y - 1);
+            int bottom = min(img.height - 1, y + 1);
+            int left = max(0, x - 1);
+            int right = min(img.width - 1, x + 1);
+
+            int T = top;
+            int B = bottom + 1;
+            int L = left;
+            int R = right + 1;
+            long long sumR = prefixR[B][R] - prefixR[T][R] - prefixR[B][L] + prefixR[T][L];
+            long long sumG = prefixG[B][R] - prefixG[T][R] - prefixG[B][L] + prefixG[T][L];
+            long long sumB = prefixB[B][R] - prefixB[T][R] - prefixB[B][L] + prefixB[T][L];
+
+            int count = (bottom - top + 1) * (right - left + 1);
+
+            blured[y][x].r = sumR / count;
+            blured[y][x].g = sumG / count;
+            blured[y][x].b = sumB / count;
+
+        }
+    }
+}
+//...
+
 // Menu
 int main() {
     Image currentImage;
@@ -323,27 +422,27 @@ int main() {
             cin >> filterChoice;
 
             switch (filterChoice) {
-            case 1: filterGrayscale(currentImage); 
-            cout << "Implemented Grayscale filter successfully!\n";
-            break;
+            case 1: filterGrayscale(currentImage);
+                cout << "Implemented Grayscale filter successfully!\n";
+                break;
 
-            case 2: filterBlackAndWhite(currentImage); 
-            cout << "Implemented Black and White filter successfully!\n";
-            break;
+            case 2: filterBlackAndWhite(currentImage);
+                cout << "Implemented Black and White filter successfully!\n";
+                break;
 
             case 3: filterInvert(currentImage);
-            cout << "Implemented Invert filter successfully!\n";
-            break;
+                cout << "Implemented Invert filter successfully!\n";
+                break;
 
             case 4: cout << "Choose:\n";
-                cout << "Enter choice: "; 
+                cout << "Enter choice: ";
                 cout << "1. flip Horizontally\n";
                 cout << "2. flip Vertically\n";
                 int x; cin >> x;
                 if (x == 1 || x == 2)
                 {
                     filterFlip(currentImage, x);
-                    if(x==1)
+                    if (x == 1)
                     {
                         cout << "Implemented Vertical Flip filter successfully!\n";
                     }
@@ -388,33 +487,33 @@ int main() {
                 default:
                     cout << "Invalid rotation choice.\n";
                     break;
-                } 
+                }
                 break;
 
             case 6: cout << "Choose a frame style: \n";
                 cout << "1. Red\n";
                 cout << "2. White\n";
-                cout << "3. Blach\n";
+                cout << "3. Black\n";
                 cout << "4. Decorated\n";
                 int f;
                 cin >> f;
                 if (f >= 1 && f <= 4) {
                     filterFrame(currentImage, f);
-                    switch(f)
+                    switch (f)
                     {
-                        case 1: cout << "Implemented Red Frame successfully!\n"; break;
-                        case 2: cout << "Implemented White Frame successfully!\n"; break;
-                        case 3: cout << "Implemented Black Frame successfully!\n"; break;
-                        case 4: cout << "Implemented Decorated Frame successfully!\n"; break;
+                    case 1: cout << "Implemented Red Frame successfully!\n"; break;
+                    case 2: cout << "Implemented White Frame successfully!\n"; break;
+                    case 3: cout << "Implemented Black Frame successfully!\n"; break;
+                    case 4: cout << "Implemented Decorated Frame successfully!\n"; break;
                     }
                 }
                 else {
                     cout << "Invalid choice!\n";
-                } 
+                }
                 break;
 
             case 7: cout << "Enter new width and height: \n";
-            int newW; char xs; int newH; cin >> newW >> xs >> newH;
+                int newW; char xs; int newH; cin >> newW >> xs >> newH;
                 if (newW > 0 && newH > 0) {
                     filterResize(currentImage, newW, newH); break;
                 }
@@ -447,6 +546,28 @@ int main() {
                     cout << "Invalid Input!\n";
                 }
                 break;
+
+            case 9:
+            filterInfrared(currentImage);
+            cout << "Implemented Infared filter successfully!\n";
+            break;
+
+            case 10:
+                cout << "1. Horizontal \n";
+                cout << "2. Vertical \n";
+                int k;
+                cin >> k;
+                if (k == 1 || k == 2) {
+                    filterSkew(currentImage, k);
+                }
+                else {
+                    cout << "Invalid input! \n";
+                } break;
+
+            case 11:
+                filterBlur(currentImage);
+                break;
+
             //....
                      
                 default: cout << "Invalid filter choice.\n";    
