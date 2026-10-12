@@ -23,17 +23,6 @@
 
 using namespace std;
 
-bool isValidExtension(const string& filename) 
-{
-    string ext = "";
-    size_t dotPos = filename.find_last_of(".");
-    if (dotPos != string::npos) {
-        ext = filename.substr(dotPos);
-        for (auto &c : ext) c = tolower(c);
-    }
-    return (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp");
-}
-
 // Filters
 void filterGrayscale(Image& img)
 {
@@ -118,7 +107,7 @@ void filterBlackAndWhite(Image& img)
 }
 
 void filterFrame(Image& img, int f) {
-    int s = 30;
+    int s = 20;
     int corner = 50;
     for (int x = 0; x < img.width; x++) {
         for (int y = 0; y < img.height; y++) {
