@@ -446,10 +446,11 @@ void filterSunlight(Image& img)
     }
 }
 
-void filterBlur(Image img) {
+void filterBlur(Image& img) {
     Image blured(img.width, img.height);
     int w = img.width;
     int h = img.height;
+    int radius = 5;
     vector<vector<long long>> prefixR(h + 1, vector<long long>(w + 1, 0));
     vector<vector<long long>> prefixG(h + 1, vector<long long>(w + 1, 0));
     vector<vector<long long>> prefixB(h + 1, vector<long long>(w + 1, 0)); 
@@ -470,10 +471,10 @@ void filterBlur(Image img) {
 
     for (int x = 0; x < img.width; x++) {
         for (int y = 0; y < img.height; y++) {
-            int top = max(0, y - 1);
-            int bottom = min(img.height - 1, y + 1);
-            int left = max(0, x - 1);
-            int right = min(img.width - 1, x + 1);
+            int top = max(0, y - radius);
+            int bottom = min(img.height - 1, y + radius);
+            int left = max(0, x - radius);
+            int right = min(img.width - 1, x + radius);
 
             int T = top;
             int B = bottom + 1;
@@ -485,14 +486,82 @@ void filterBlur(Image img) {
 
             int count = (bottom - top + 1) * (right - left + 1);
 
-            blured(y,x,0) = sumR / count;
-            blured(y,x,1) = sumG / count;
-            blured(y,x,2) = sumB / count;
+            blured(x,y,0) = sumR / count;
+            blured(x,y,1) = sumG / count;
+            blured(x,y,2) = sumB / count;
 
         }
     }
 
     img = blured;
+}
+
+void filterOilPainting(Image& img, int radius = 4, int levels = 20)
+{
+    Image result(img.width, img.height);
+
+    for (int x = 0; x < img.width; x++)
+    {
+        for (int y = 0; y < img.height; y++)
+        {
+            vector<int> count(levels, 0);
+            vector<int> sumR(levels, 0);
+            vector<int> sumG(levels, 0);
+            vector<int> sumB(levels, 0);
+
+            for (int dx = -radius; dx <= radius; dx++)
+            {
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    int nx = x + dx;
+                    int ny = y + dy;
+
+                    if (nx < 0 || nx >= img.width ||
+                        ny < 0 || ny >= img.height)
+                    {
+                        continue;
+                    }
+
+                    int r = img(nx, ny, 0);
+                    int g = img(nx, ny, 1);
+                    int b = img(nx, ny, 2);
+
+                    int intensity = (r + g + b) / 3;
+
+                    int bucket = intensity * levels / 256;
+
+                    if (bucket >= levels)
+                        bucket = levels - 1;
+
+                    count[bucket]++;
+                    sumR[bucket] += r;
+                    sumG[bucket] += g;
+                    sumB[bucket] += b;
+                }
+            }
+
+            int bestBucket = 0;
+
+            for (int i = 1; i < levels; i++)
+            {
+                if (count[i] > count[bestBucket])
+                {
+                    bestBucket = i;
+                }
+            }
+
+            result(x, y, 0) =
+                sumR[bestBucket] / count[bestBucket];
+
+            result(x, y, 1) =
+                sumG[bestBucket] / count[bestBucket];
+
+            result(x, y, 2) =
+                sumB[bestBucket] / count[bestBucket];
+        }
+    }
+
+    img = result;
 }
 
 // ================ GUI ===============//
@@ -616,11 +685,6 @@ void MainFrame::Onloadimge(wxCommandEvent& event)
     else
     {
         filename = dialog.GetPath().ToStdString();
-        size_t dot = filename.find_last_of('.');
-        if (dot != string::npos)
-        {
-            transform(filename.begin() + dot, filename.end(), filename.begin() + dot, [](unsigned char c) { return tolower(c); });
-        }
     }
 
     try
@@ -926,11 +990,6 @@ void MainFrame::Onapplyfilter(wxCommandEvent& event)
             else
             {
                 filename = dialog.GetPath().ToStdString();
-                size_t dot = filename.find_last_of('.');
-                if (dot != string::npos)
-                {
-                    transform(filename.begin() + dot, filename.end(), filename.begin() + dot, [](unsigned char c) { return tolower(c); });
-                }
             }
 
             try
@@ -949,7 +1008,9 @@ void MainFrame::Onapplyfilter(wxCommandEvent& event)
         filterSunlight(currentimage);
         break;
 
-        // case 17:
+        case 17:
+        filterOilPainting(currentimage);
+        break;
 
         case 18:
         filterBlur(currentimage);
