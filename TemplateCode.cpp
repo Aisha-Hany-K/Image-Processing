@@ -559,7 +559,7 @@ class MainFrame : public wxFrame
     MainFrame();
 };
 
-MainFrame::MainFrame(): wxFrame(nullptr, wxID_ANY, "Image Processing", wxDefaultPosition, wxSize(800,500))
+MainFrame::MainFrame(): wxFrame(nullptr, wxID_ANY, "Pixelit", wxDefaultPosition, wxSize(800,500))
 {
     SetIcon(wxIcon("magicapp.ICO", wxBITMAP_TYPE_ICO));
     wxPanel* panel = new wxPanel(this);
